@@ -1,17 +1,25 @@
 package br.com.facil.creche.microservice.creche.controller;
 
-import br.com.facil.creche.microservice.creche.entity.Creche;
+import br.com.facil.creche.microservice.creche.dto.CrecheDTO;
+import br.com.facil.creche.microservice.creche.service.CrecheService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
+@RequestMapping("creches")
 public class CrecheController {
+
+    @Autowired
+    private CrecheService crecheService;
 
     public static final String CRECHE_ID = "Creche id";
 
@@ -19,18 +27,18 @@ public class CrecheController {
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Return the creche created")
     })
-    @PostMapping(value = "/creches", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Object> create(@ApiParam("Creche object to create") Object body) {
-        Creche creche = Creche.builder().id(1L).build();
-        return ResponseEntity.status(HttpStatus.CREATED).body(null);
+    @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<CrecheDTO> create(@ApiParam("Creche object to create") CrecheDTO creche) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(crecheService.create(creche));
     }
 
     @ApiOperation(value = "Delete a creche register")
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = "Creche deleted successfully")
     })
-    @DeleteMapping("/creches/:id")
+    @DeleteMapping("/{id}")
     public ResponseEntity delete(@ApiParam(CRECHE_ID) long id) {
+        crecheService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -38,29 +46,29 @@ public class CrecheController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Creche updated successfully")
     })
-    @PutMapping(value = "/creches/:id", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Object> update(
+    @PutMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<CrecheDTO> update(
             @ApiParam(CRECHE_ID) long id,
-            @ApiParam("Creche object to update") Object body
+            @ApiParam("Creche object to update") CrecheDTO creche
     ) {
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(crecheService.update(creche));
     }
 
     @ApiOperation(value = "List all creches")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Creches listed successfully")
     })
-    @GetMapping(value = "/creches", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Object> listAllByLocation() {
-        return ResponseEntity.ok(null);
+    @GetMapping(value = "?search={location}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<List<CrecheDTO>> listAllByLocation() {
+        return ResponseEntity.ok(crecheService.listAllByLocation());
     }
 
     @ApiOperation(value = "Get detail of one creche")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Creche retrieved successfully")
     })
-    @GetMapping(value = "/creches/:id", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Object> getDetail(@ApiParam(CRECHE_ID) long id) {
-        return ResponseEntity.ok(null);
+    @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<CrecheDTO> getDetail(@ApiParam(CRECHE_ID) long id) {
+        return ResponseEntity.ok(crecheService.getDetail(id));
     }
 }
