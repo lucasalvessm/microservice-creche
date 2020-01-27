@@ -1,6 +1,7 @@
 package br.com.facil.creche.microservice.creche.controller;
 
 import br.com.facil.creche.microservice.creche.dto.CrecheDTO;
+import br.com.facil.creche.microservice.creche.dto.CrecheLightDTO;
 import br.com.facil.creche.microservice.creche.service.CrecheService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -34,12 +35,17 @@ public class CrecheController {
 
     @ApiOperation(value = "Delete a creche register")
     @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "Creche deleted successfully")
+            @ApiResponse(code = 204, message = "Creche deleted successfully"),
+            @ApiResponse(code = 404, message = "Could not find any creche for provided id")
     })
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@ApiParam(CRECHE_ID) long id) {
-        crecheService.delete(id);
-        return ResponseEntity.noContent().build();
+        try {
+            crecheService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @ApiOperation(value = "Update a creche register")
@@ -58,14 +64,15 @@ public class CrecheController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Creches listed successfully")
     })
-    @GetMapping(value = "?search={location}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<List<CrecheDTO>> listAllByLocation() {
-        return ResponseEntity.ok(crecheService.listAllByLocation());
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<List<CrecheLightDTO>> listAll() {
+        return ResponseEntity.ok(crecheService.listAll());
     }
 
     @ApiOperation(value = "Get detail of one creche")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Creche retrieved successfully")
+            @ApiResponse(code = 200, message = "Creche retrieved successfully"),
+            @ApiResponse(code = 404, message = "Could not find any creche for provided id")
     })
     @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<CrecheDTO> getDetail(@ApiParam(CRECHE_ID) long id) {
