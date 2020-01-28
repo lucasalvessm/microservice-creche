@@ -1,7 +1,6 @@
 package br.com.facil.creche.microservice.creche.service.impl;
 
-import br.com.facil.creche.microservice.creche.dto.CrecheDTO;
-import br.com.facil.creche.microservice.creche.dto.CrecheLightDTO;
+import br.com.facil.creche.microservice.creche.dto.*;
 import br.com.facil.creche.microservice.creche.po.Creche;
 import br.com.facil.creche.microservice.creche.repository.CrecheRepository;
 import br.com.facil.creche.microservice.creche.service.CrecheService;
@@ -21,8 +20,10 @@ public class CrecheServiceImpl implements CrecheService {
     private CrecheRepository crecheRepository;
 
     @Override
-    public CrecheDTO update(CrecheDTO creche) {
-        return null;
+    public CrecheResponse update(UpdateRequest creche) {
+        Creche crecheToUpdate = (Creche) ClassMapper.copyProperties(new Creche(), creche);
+        return (CrecheResponse) ClassMapper
+                .copyProperties(new CrecheResponse(), crecheRepository.save(crecheToUpdate));
     }
 
     @Override
@@ -34,23 +35,23 @@ public class CrecheServiceImpl implements CrecheService {
     }
 
     @Override
-    public CrecheDTO create(CrecheDTO creche) {
+    public CrecheResponse create(CreateRequest creche) {
         Creche crecheSaved = crecheRepository.save((Creche) ClassMapper.copyProperties(new Creche(), creche));
-        return (CrecheDTO) ClassMapper.copyProperties(new CrecheDTO(), crecheSaved);
+        return (CrecheResponse) ClassMapper.copyProperties(new CrecheResponse(), crecheSaved);
     }
 
     @Override
-    public List<CrecheLightDTO> listAll() {
+    public List<ListResponse> listAll() {
         List<Creche> crecheList = (List<Creche>) crecheRepository.findAll();
         return crecheList
                 .stream()
-                .map(creche -> (CrecheLightDTO) ClassMapper.copyProperties(new CrecheLightDTO(), creche))
+                .map(creche -> (ListResponse) ClassMapper.copyProperties(new ListResponse(), creche))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public CrecheDTO getDetail(long id) {
+    public CrecheResponse getDetail(long id) {
         Optional<Creche> creche = crecheRepository.findById(id);
-        return (CrecheDTO) ClassMapper.copyProperties(new CrecheDTO(), creche.orElseThrow());
+        return (CrecheResponse) ClassMapper.copyProperties(new CrecheResponse(), creche.orElseThrow());
     }
 }

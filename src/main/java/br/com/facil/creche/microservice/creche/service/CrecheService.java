@@ -1,18 +1,17 @@
 package br.com.facil.creche.microservice.creche.service;
 
-import br.com.facil.creche.microservice.creche.dto.CrecheDTO;
-import br.com.facil.creche.microservice.creche.dto.CrecheLightDTO;
+import br.com.facil.creche.microservice.creche.dto.*;
 
 import java.util.List;
 
 public interface CrecheService {
-    CrecheDTO update(CrecheDTO creche);
+    CrecheResponse update(UpdateRequest creche);
 
     void delete(long id);
 
-    CrecheDTO create(CrecheDTO creche);
+    CrecheResponse create(CreateRequest creche);
 
-    List<CrecheLightDTO> listAll();
+    List<ListResponse> listAll();
 
-    CrecheDTO getDetail(long id);
+    CrecheResponse getDetail(long id);
 }

@@ -6,9 +6,7 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class CrecheDTO {
-
-    private Long id;
+public class CrecheLight {
 
     @NotNull
     @ApiModelProperty(required = true)
@@ -19,6 +17,4 @@ public class CrecheDTO {
     @NotNull
     @ApiModelProperty(required = true)
     private Double price;
-    private String activities;
-    private String teachingMethod;
 }
