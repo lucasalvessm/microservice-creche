@@ -13,11 +13,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CrecheServiceTest {
@@ -74,6 +76,45 @@ public class CrecheServiceTest {
         crecheToUpdate.setId(2L);
         when(crecheRepository.existsById(2L)).thenReturn(false);
         assertThrows(NoSuchElementException.class, () -> crecheService.update(crecheToUpdate), "Expect error because the resource was not found");
+    }
+
+    @Test
+    public void listSuccessfullyTest() {
+        when(crecheRepository.findAll()).thenReturn(Arrays.asList(creche, creche, creche));
+
+        var crecheList = crecheService.listAll();
+
+        assertEquals(3, crecheList.size());
+        assertEquals(crecheList.get(0).getId(), creche.getId());
+    }
+
+    @Test
+    public void getDetailSuccessfullyTest() {
+        when(crecheRepository.findById(creche.getId())).thenReturn(Optional.of(creche));
+
+        var crecheDetail = crecheService.getDetail(1L);
+
+        assertEquals(creche.getId(), crecheDetail.getId());
+    }
+
+    @Test
+    public void resourceNotFoundOnGetDetailTest() {
+        when(crecheRepository.findById(creche.getId())).thenReturn(Optional.empty());
+        assertThrows(NoSuchElementException.class, () -> crecheService.getDetail(1L), "Expect error because the resource was not found");
+    }
+
+    @Test
+    public void deleteSuccessfullyTest() {
+        when(crecheRepository.existsById(creche.getId())).thenReturn(true);
+        doNothing().when(crecheRepository).deleteById(creche.getId());
+        crecheService.delete(1L);
+        verify(crecheRepository, atLeastOnce()).deleteById(creche.getId());
+    }
+
+    @Test
+    public void resourceNotFoundOnDeleteTest() {
+        when(crecheRepository.existsById(creche.getId())).thenReturn(false);
+        assertThrows(NoSuchElementException.class, () -> crecheService.delete(1L), "Expect error because the resource was not found");
     }
 
 }
