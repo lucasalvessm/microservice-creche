@@ -43,13 +43,13 @@ public class CrecheServiceImpl implements CrecheService {
 
     @Override
     public CrecheResponse create(CreateRequest creche) {
-        Creche crecheSaved = crecheRepository.save((Creche) ClassMapper.copyProperties(new Creche(), creche));
+        var crecheSaved = crecheRepository.save((Creche) ClassMapper.copyProperties(new Creche(), creche));
         return (CrecheResponse) ClassMapper.copyProperties(new CrecheResponse(), crecheSaved);
     }
 
     @Override
     public List<ListResponse> listAll() {
-        List<Creche> crecheList = (List<Creche>) crecheRepository.findAll();
+        var crecheList = (List<Creche>) crecheRepository.findAll();
         return crecheList
                 .stream()
                 .map(creche -> (ListResponse) ClassMapper.copyProperties(new ListResponse(), creche))
@@ -58,7 +58,7 @@ public class CrecheServiceImpl implements CrecheService {
 
     @Override
     public CrecheResponse getDetail(long id) {
-        Optional<Creche> creche = crecheRepository.findById(id);
+        var creche = crecheRepository.findById(id);
         return (CrecheResponse) ClassMapper.copyProperties(new CrecheResponse(), creche.orElseThrow(NoSuchElementException::new));
     }
 }
