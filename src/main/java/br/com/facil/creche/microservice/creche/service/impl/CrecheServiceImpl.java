@@ -28,7 +28,7 @@ public class CrecheServiceImpl implements CrecheService {
     public CrecheResponse update(UpdateRequest creche) {
         if (!crecheRepository.existsById(creche.getId()))
             throw new NoSuchElementException(COULD_NOT_FIND_ANY_RESOURCE_FOR_THIS_ID);
-        Creche crecheToUpdate = (Creche) ClassMapper.copyProperties(new Creche(), creche);
+        var crecheToUpdate = (Creche) ClassMapper.copyProperties(new Creche(), creche);
         return (CrecheResponse) ClassMapper
                 .copyProperties(new CrecheResponse(), crecheRepository.save(crecheToUpdate));
     }
