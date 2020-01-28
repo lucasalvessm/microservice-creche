@@ -1,6 +1,9 @@
 package br.com.facil.creche.microservice.creche.service.impl;
 
-import br.com.facil.creche.microservice.creche.dto.*;
+import br.com.facil.creche.microservice.creche.dto.CreateRequest;
+import br.com.facil.creche.microservice.creche.dto.CrecheResponse;
+import br.com.facil.creche.microservice.creche.dto.ListResponse;
+import br.com.facil.creche.microservice.creche.dto.UpdateRequest;
 import br.com.facil.creche.microservice.creche.po.Creche;
 import br.com.facil.creche.microservice.creche.repository.CrecheRepository;
 import br.com.facil.creche.microservice.creche.service.CrecheService;
@@ -16,11 +19,15 @@ import java.util.stream.Collectors;
 @Service
 public class CrecheServiceImpl implements CrecheService {
 
+    public static final String COULD_NOT_FIND_ANY_RESOURCE_FOR_THIS_ID = "Could not find any resource for this id";
+
     @Autowired
     private CrecheRepository crecheRepository;
 
     @Override
     public CrecheResponse update(UpdateRequest creche) {
+        if (!crecheRepository.existsById(creche.getId()))
+            throw new NoSuchElementException(COULD_NOT_FIND_ANY_RESOURCE_FOR_THIS_ID);
         Creche crecheToUpdate = (Creche) ClassMapper.copyProperties(new Creche(), creche);
         return (CrecheResponse) ClassMapper
                 .copyProperties(new CrecheResponse(), crecheRepository.save(crecheToUpdate));
@@ -28,8 +35,8 @@ public class CrecheServiceImpl implements CrecheService {
 
     @Override
     public void delete(long id) {
-        if (crecheRepository.existsById(id))
-            throw new NoSuchElementException("Could not find any resource for this id");
+        if (!crecheRepository.existsById(id))
+            throw new NoSuchElementException(COULD_NOT_FIND_ANY_RESOURCE_FOR_THIS_ID);
 
         crecheRepository.deleteById(id);
     }
@@ -52,6 +59,6 @@ public class CrecheServiceImpl implements CrecheService {
     @Override
     public CrecheResponse getDetail(long id) {
         Optional<Creche> creche = crecheRepository.findById(id);
-        return (CrecheResponse) ClassMapper.copyProperties(new CrecheResponse(), creche.orElseThrow());
+        return (CrecheResponse) ClassMapper.copyProperties(new CrecheResponse(), creche.orElseThrow(NoSuchElementException::new));
     }
 }

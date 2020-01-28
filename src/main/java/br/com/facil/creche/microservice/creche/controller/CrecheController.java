@@ -1,6 +1,9 @@
 package br.com.facil.creche.microservice.creche.controller;
 
-import br.com.facil.creche.microservice.creche.dto.*;
+import br.com.facil.creche.microservice.creche.dto.CreateRequest;
+import br.com.facil.creche.microservice.creche.dto.CrecheResponse;
+import br.com.facil.creche.microservice.creche.dto.ListResponse;
+import br.com.facil.creche.microservice.creche.dto.UpdateRequest;
 import br.com.facil.creche.microservice.creche.service.CrecheService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("creches")
@@ -31,7 +35,7 @@ public class CrecheController {
     })
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<CrecheResponse> create(@ApiParam("Creche object to create")
-                                            @Valid CreateRequest creche) {
+                                                 @Valid CreateRequest creche) {
         return ResponseEntity.status(HttpStatus.CREATED).body(crecheService.create(creche));
     }
 
@@ -45,19 +49,24 @@ public class CrecheController {
         try {
             crecheService.delete(id);
             return ResponseEntity.noContent().build();
-        } catch (Exception e) {
+        } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @ApiOperation(value = "Update a creche register")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Creche updated successfully")
+            @ApiResponse(code = 200, message = "Creche updated successfully"),
+            @ApiResponse(code = 404, message = COULD_NOT_FIND_ANY_CRECHE_FOR_PROVIDED_ID)
     })
     @PutMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<CrecheResponse> update(@ApiParam("Creche object to update")
-                                            @Valid UpdateRequest creche) {
-        return ResponseEntity.ok(crecheService.update(creche));
+                                                 @Valid UpdateRequest creche) {
+        try {
+            return ResponseEntity.ok(crecheService.update(creche));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @ApiOperation(value = "List all creches")
@@ -76,6 +85,11 @@ public class CrecheController {
     })
     @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<CrecheResponse> getDetail(@ApiParam(CRECHE_ID) long id) {
-        return ResponseEntity.ok(crecheService.getDetail(id));
+        try {
+            return ResponseEntity.ok(crecheService.getDetail(id));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 }

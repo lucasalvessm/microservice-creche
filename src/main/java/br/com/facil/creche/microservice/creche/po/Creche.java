@@ -1,12 +1,14 @@
 package br.com.facil.creche.microservice.creche.po;
 
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
 @Entity
 @Data
 @Table(name = "creche")
+@SuperBuilder
 public class Creche {
 
     @Id
@@ -28,4 +30,7 @@ public class Creche {
 
     @Column(name = "TEACHING_METHOD")
     private String teachingMethod;
+
+    public Creche() {
+    }
 }
