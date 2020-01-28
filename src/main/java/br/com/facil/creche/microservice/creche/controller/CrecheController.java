@@ -45,7 +45,7 @@ public class CrecheController {
             @ApiResponse(code = 404, message = COULD_NOT_FIND_ANY_CRECHE_FOR_PROVIDED_ID)
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@ApiParam(CRECHE_ID) long id) {
+    public ResponseEntity delete(@ApiParam(value = CRECHE_ID, required = true) @PathVariable(value = "id") long id) {
         try {
             crecheService.delete(id);
             return ResponseEntity.noContent().build();
@@ -84,7 +84,7 @@ public class CrecheController {
             @ApiResponse(code = 404, message = COULD_NOT_FIND_ANY_CRECHE_FOR_PROVIDED_ID)
     })
     @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<CrecheResponse> getDetail(@ApiParam(CRECHE_ID) long id) {
+    public ResponseEntity<CrecheResponse> getDetail(@ApiParam(value = CRECHE_ID, required = true) @PathVariable(value = "id") long id) {
         try {
             return ResponseEntity.ok(crecheService.getDetail(id));
         } catch (NoSuchElementException e) {
