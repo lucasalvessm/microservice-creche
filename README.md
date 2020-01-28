@@ -12,7 +12,7 @@ Technologies used:
 
 ## Project Patterns implemented
 
-- TODO
+- Builder
 
 ## Pre requirements to run the applications:
 
