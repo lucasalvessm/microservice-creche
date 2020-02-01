@@ -9,6 +9,7 @@ public class Creche extends CrecheLight {
 
     private String activities;
     private String teachingMethod;
+    private String cnpj;
 
     public Creche() {
     }

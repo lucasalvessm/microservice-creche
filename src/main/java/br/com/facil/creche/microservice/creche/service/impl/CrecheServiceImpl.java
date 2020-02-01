@@ -4,16 +4,20 @@ import br.com.facil.creche.microservice.creche.dto.CreateRequest;
 import br.com.facil.creche.microservice.creche.dto.CrecheResponse;
 import br.com.facil.creche.microservice.creche.dto.ListResponse;
 import br.com.facil.creche.microservice.creche.dto.UpdateRequest;
+import br.com.facil.creche.microservice.creche.po.Address;
 import br.com.facil.creche.microservice.creche.po.Creche;
+import br.com.facil.creche.microservice.creche.po.Image;
+import br.com.facil.creche.microservice.creche.repository.AddressRepository;
 import br.com.facil.creche.microservice.creche.repository.CrecheRepository;
 import br.com.facil.creche.microservice.creche.service.CrecheService;
 import br.com.facil.creche.microservice.creche.util.ClassMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +27,9 @@ public class CrecheServiceImpl implements CrecheService {
 
     @Autowired
     private CrecheRepository crecheRepository;
+
+    @Autowired
+    private AddressRepository addressRepository;
 
     @Override
     public CrecheResponse update(UpdateRequest creche) {
@@ -42,23 +49,55 @@ public class CrecheServiceImpl implements CrecheService {
     }
 
     @Override
+    @Transactional
     public CrecheResponse create(CreateRequest creche) {
-        var crecheSaved = crecheRepository.save((Creche) ClassMapper.copyProperties(new Creche(), creche));
+        var crecheToSave = (Creche) ClassMapper.copyProperties(new Creche(), creche);
+
+        if (creche.getAddressInfo() != null)
+            crecheToSave.setAddress((Address) ClassMapper.copyProperties(new Address(), creche.getAddressInfo()));
+
+        if (creche.getImages() != null)
+            crecheToSave
+                    .setImageList(creche
+                            .getImages()
+                            .stream()
+                            .map(image -> new Image(image))
+                            .collect(Collectors.toList()));
+
+        var crecheSaved = crecheRepository.save(crecheToSave);
+//        crecheToSave.getAddress().setIdCreche(crecheSaved.getId());
+//        addressRepository.save(crecheToSave.getAddress());
         return (CrecheResponse) ClassMapper.copyProperties(new CrecheResponse(), crecheSaved);
     }
 
     @Override
     public List<ListResponse> listAll() {
-        var crecheList = (List<Creche>) crecheRepository.findAll();
-        return crecheList
-                .stream()
-                .map(creche -> (ListResponse) ClassMapper.copyProperties(new ListResponse(), creche))
-                .collect(Collectors.toList());
+        var crecheList = new ArrayList<ListResponse>();
+        crecheRepository
+                .findAll()
+                .iterator()
+                .forEachRemaining(creche ->
+                        crecheList.add((ListResponse) ClassMapper.copyProperties(new ListResponse(), creche)));
+        return crecheList;
     }
 
     @Override
     public CrecheResponse getDetail(long id) {
-        var creche = crecheRepository.findById(id);
-        return (CrecheResponse) ClassMapper.copyProperties(new CrecheResponse(), creche.orElseThrow(NoSuchElementException::new));
+        var creche = crecheRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        var crecheResponse = (CrecheResponse) ClassMapper.copyProperties(new CrecheResponse(), creche);
+
+        if (creche.getAddress() != null)
+            crecheResponse.setAddressInfo((br.com.facil.creche.microservice.creche.dto.Address)
+                    ClassMapper.copyProperties(new br.com.facil.creche.microservice.creche.dto.Address(), creche.getAddress()));
+
+        if (creche.getImageList() != null)
+            crecheResponse
+                    .setImages(creche
+                            .getImageList()
+                            .stream()
+                            .map(image -> image.getImageBase64())
+                            .collect(Collectors.toList()));
+
+        return crecheResponse;
     }
 }

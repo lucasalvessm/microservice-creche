@@ -15,14 +15,14 @@ services:
       MYSQL_ROOT_PASSWORD: senha_forte
     ports:
       - "3306:3306"
-  creche-microservice:
-    build: .
-    networks:
-      - new
-    depends_on:
-      - db
-    ports:
-      - "8080:8080"
+#  creche-microservice:
+#    build: .
+#    networks:
+#      - new
+#    depends_on:
+#      - db
+#    ports:
+#      - "8080:8080"
 #  creche-microservice:
 #    image: creche-facil/microservice.creche
 #    networks:
@@ -34,3 +34,5 @@ services:
     restart: always
     ports:
       - 8081:8080
+    networks:
+      - new

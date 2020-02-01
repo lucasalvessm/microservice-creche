@@ -4,6 +4,7 @@ package br.com.facil.creche.microservice.creche.service;
 import br.com.facil.creche.microservice.creche.dto.CreateRequest;
 import br.com.facil.creche.microservice.creche.dto.UpdateRequest;
 import br.com.facil.creche.microservice.creche.po.Creche;
+import br.com.facil.creche.microservice.creche.repository.AddressRepository;
 import br.com.facil.creche.microservice.creche.repository.CrecheRepository;
 import br.com.facil.creche.microservice.creche.service.impl.CrecheServiceImpl;
 import br.com.facil.creche.microservice.creche.util.ClassMapper;
@@ -36,6 +37,9 @@ public class CrecheServiceTest {
             .build();
     @Mock
     private CrecheRepository crecheRepository;
+
+    @Mock
+    private AddressRepository addressRepository;
 
     @InjectMocks
     private CrecheService crecheService = new CrecheServiceImpl();

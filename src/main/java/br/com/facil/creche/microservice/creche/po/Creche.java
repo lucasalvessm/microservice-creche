@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -22,14 +23,25 @@ public class Creche {
     @Column(name = "TX_OPENING_HOURS")
     private String openingHours;
 
-    @Column(name = "PRICE")
+    @Column(name = "VL_PRICE")
     private Double price;
 
-    @Column(name = "ACTIVITIES")
+    @Column(name = "TX_CNPJ")
+    private String cnpj;
+
+    @Column(name = "TX_ACTIVITIES")
     private String activities;
 
-    @Column(name = "TEACHING_METHOD")
+    @Column(name = "TX_TEACHING_METHOD")
     private String teachingMethod;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "ID", referencedColumnName = "ID_CRECHE")
+    private Address address;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "ID_CRECHE", referencedColumnName = "ID")
+    private List<Image> imageList;
 
     public Creche() {
     }

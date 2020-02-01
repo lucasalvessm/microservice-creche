@@ -21,6 +21,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("creches")
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 public class CrecheController {
 
     public static final String COULD_NOT_FIND_ANY_CRECHE_FOR_PROVIDED_ID = "Could not find any creche for provided id";
@@ -35,7 +36,7 @@ public class CrecheController {
     })
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<CrecheResponse> create(@ApiParam("Creche object to create")
-                                                 @Valid CreateRequest creche) {
+                                                 @Valid @RequestBody  CreateRequest creche) {
         return ResponseEntity.status(HttpStatus.CREATED).body(crecheService.create(creche));
     }
 
@@ -61,7 +62,7 @@ public class CrecheController {
     })
     @PutMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<CrecheResponse> update(@ApiParam("Creche object to update")
-                                                 @Valid UpdateRequest creche) {
+                                                 @Valid @RequestBody UpdateRequest creche) {
         try {
             return ResponseEntity.ok(crecheService.update(creche));
         } catch (NoSuchElementException e) {
