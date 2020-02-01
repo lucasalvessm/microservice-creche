@@ -3,7 +3,6 @@ package br.com.facil.creche.microservice.creche.po;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.sql.Blob;
 
 @Entity
 @Data
@@ -26,8 +25,9 @@ public class Image {
     @Column(name = "ID_CRECHE")
     private Long idCreche;
 
-    @Lob @Basic(fetch = FetchType.LAZY)
-    @Column(name = "TX_IMAGE_BASE64", length=16777215)
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "TX_IMAGE_BASE64", length = 16777215)
     private String imageBase64;
 
 }

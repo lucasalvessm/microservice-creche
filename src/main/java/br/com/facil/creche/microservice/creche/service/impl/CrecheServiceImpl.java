@@ -7,7 +7,6 @@ import br.com.facil.creche.microservice.creche.dto.UpdateRequest;
 import br.com.facil.creche.microservice.creche.po.Address;
 import br.com.facil.creche.microservice.creche.po.Creche;
 import br.com.facil.creche.microservice.creche.po.Image;
-import br.com.facil.creche.microservice.creche.repository.AddressRepository;
 import br.com.facil.creche.microservice.creche.repository.CrecheRepository;
 import br.com.facil.creche.microservice.creche.service.CrecheService;
 import br.com.facil.creche.microservice.creche.util.ClassMapper;
@@ -27,9 +26,6 @@ public class CrecheServiceImpl implements CrecheService {
 
     @Autowired
     private CrecheRepository crecheRepository;
-
-    @Autowired
-    private AddressRepository addressRepository;
 
     @Override
     public CrecheResponse update(UpdateRequest creche) {
@@ -65,8 +61,6 @@ public class CrecheServiceImpl implements CrecheService {
                             .collect(Collectors.toList()));
 
         var crecheSaved = crecheRepository.save(crecheToSave);
-//        crecheToSave.getAddress().setIdCreche(crecheSaved.getId());
-//        addressRepository.save(crecheToSave.getAddress());
         return (CrecheResponse) ClassMapper.copyProperties(new CrecheResponse(), crecheSaved);
     }
 

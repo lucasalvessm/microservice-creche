@@ -8,12 +8,12 @@ import java.util.List;
 
 @Entity
 @Data
-@Table(name = "creche")
+@Table(name = "CRECHE")
 @SuperBuilder
 public class Creche {
 
     @Id
-    @Column(name = "ID")
+    @Column(name = "ID_CRECHE")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -36,11 +36,11 @@ public class Creche {
     private String teachingMethod;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID", referencedColumnName = "ID_CRECHE")
+    @JoinColumn(name = "ID_ADDRESS", referencedColumnName = "ID_ADDRESS")
     private Address address;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_CRECHE", referencedColumnName = "ID")
+    @JoinColumn(name = "ID_CRECHE", referencedColumnName = "ID_CRECHE")
     private List<Image> imageList;
 
     public Creche() {

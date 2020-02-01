@@ -13,9 +13,6 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long addressId;
 
-    @Column(name = "ID_CRECHE")
-    private Long idCreche;
-
     @Column(name = "TX_ADDRESS")
     private String address;
 

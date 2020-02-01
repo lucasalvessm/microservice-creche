@@ -33,4 +33,5 @@ That is it. Simple like that.
 
 - MySQL Admin: http://localhost:8081
 - Documentation (Swagger): http://localhost:8080/swagger-ui.html
-- creche-api: http://localhost:8080/creches1
+- creche-api: http://localhost:8080/creches
+- Health Check: http://localhost:8080/actuator
