@@ -1,9 +1,11 @@
 package br.com.facil.creche.microservice.creche.service;
 
 
+import br.com.facil.creche.microservice.creche.dto.Address;
 import br.com.facil.creche.microservice.creche.dto.CreateRequest;
 import br.com.facil.creche.microservice.creche.dto.UpdateRequest;
 import br.com.facil.creche.microservice.creche.po.Creche;
+import br.com.facil.creche.microservice.creche.po.Image;
 import br.com.facil.creche.microservice.creche.repository.AddressRepository;
 import br.com.facil.creche.microservice.creche.repository.CrecheRepository;
 import br.com.facil.creche.microservice.creche.service.impl.CrecheServiceImpl;
@@ -49,6 +51,8 @@ public class CrecheServiceTest {
         when(crecheRepository.save(any())).thenReturn(creche);
 
         var request = new CreateRequest();
+        request.setAddressInfo(new Address());
+        request.setImages(Arrays.asList("", ""));
         var crecheResponse = crecheService.create((CreateRequest) ClassMapper.copyProperties(request, creche));
 
         assertEquals(request.getActivities(), crecheResponse.getActivities());
@@ -94,6 +98,8 @@ public class CrecheServiceTest {
 
     @Test
     public void getDetailSuccessfullyTest() {
+        creche.setImageList(Arrays.asList(new Image("")));
+        creche.setAddress(new br.com.facil.creche.microservice.creche.po.Address());
         when(crecheRepository.findById(creche.getId())).thenReturn(Optional.of(creche));
 
         var crecheDetail = crecheService.getDetail(1L);

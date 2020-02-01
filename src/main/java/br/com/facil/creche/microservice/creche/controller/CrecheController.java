@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
 public class CrecheController {
 
     public static final String COULD_NOT_FIND_ANY_CRECHE_FOR_PROVIDED_ID = "Could not find any creche for provided id";
-    
+
     @Autowired
     private CrecheService crecheService;
 
